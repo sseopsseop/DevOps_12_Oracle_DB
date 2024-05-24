@@ -148,3 +148,88 @@ SELECT SIGN(-123)
 	 , SIGN(0)
 	 , SIGN(456)
 	FROM DUAL;
+	
+-- 1-5. 날짜 연산
+SELECT SYSDATE
+	 , SYSDATE + 100 -- 오늘날짜부터 100일 뒤
+	 , SYSDATE - 100 -- 오늘날짜부터 100일 전
+	 , SYSDATE + 3 / 24 -- 현재시간으로부터 3시간 뒤
+	 , SYSDATE - 5 / 24 -- 현재시간으로부터 5시간 전
+	 , SYSDATE - TO_DATE('20230523', 'YYYYMMDD') -- 두 날짜간의 차이
+	 -- 날짜에 TRUNC 함수를 사용하면 시간 분 초를 00:00:00로 초기화한다.
+	 , TRUNC(SYSDATE) - TO_DATE('20230523', 'YYYYMMDD')
+	FROM DUAL;
+
+-- 1999년 1월 1일부터 100일 뒤 까지 부임한 교수의 교수번호, 교수이름, 부임일자 조회
+SELECT PNO
+	 , PNAME
+	 , HIREDATE
+	FROM PROFESSOR
+	WHERE HIREDATE 
+		BETWEEN TO_DATE('19990101', 'YYYYMMDD') 
+		AND TO_DATE('19990101', 'YYYYMMDD') + 100;
+
+-- 1-6. 날짜 함수
+-- ROUND(날짜, 날짜 단위): 지정한 날짜 단위까지의 날짜는 빼오고 나머지 날짜는 초기화. 버려지는 날짜의 절반이상 지났으면 올림된다.
+SELECT ROUND(SYSDATE, 'DD')
+	FROM DUAL;
+
+SELECT ROUND(TO_DATE('20241124', 'YYYYMMDD'), 'MM')
+	FROM DUAL;
+
+-- TRUNC(날짜, 날짜 단위): 지정한 날짜 단위까지의 날짜는 빼오고 나머지 날짜는 초기화. 버려지는 날짜는 그냥 초기화.
+SELECT SYSDATE
+	 , TRUNC(SYSDATE, 'YYYY')
+	 , TRUNC(SYSDATE, 'MM')
+	 , TRUNC(SYSDATE, 'DD')
+	FROM DUAL;
+
+-- MONTHS_BETWEEN(날짜1, 날짜2): 날짜1에서 날짜2를 뺀 일자 차이를 개월수로 치환해서 리턴
+SELECT MONTHS_BETWEEN(TRUNC(SYSDATE, 'DD'), TO_DATE('20230831', 'YYYYMMDD'))
+	FROM DUAL;
+
+-- ADD_MONTHS(날짜, 숫자): 날짜에서 숫자만큼의 개월수를 더한 날짜 리턴
+SELECT ADD_MONTHS(SYSDATE, 5)
+	FROM DUAL;
+
+-- NEXT_DAY(날짜, 요일): 날짜 이후에 처음으로 만나는 요일의 날짜 리턴
+SELECT NEXT_DAY(SYSDATE, '일요일')
+	FROM DUAL;
+
+-- LAST_DAY(날짜): 날짜를 포함하고 있는 달의 마지막 날짜를 리턴
+SELECT LAST_DAY(SYSDATE)
+	FROM DUAL;
+
+-- 사원의 사원번호, 사원이름, 입사일, 입사일 +100일의 날짜, 입사일 +10년의 날짜 조회
+SELECT ENO
+	 , ENAME
+	 , HDATE
+	 , HDATE + 100
+	 , ADD_MONTHS(HDATE, 120)
+	FROM EMP;
+	
+-- 1-7. 변환함수
+-- TO_CHAR(날짜나 숫자, 변환될 문자열의 형식지정자): 매개변수로 받은 날짜나 숫자 데이터를 지정된 형식으로 변환한 문자열을 리턴
+-- 숫자를 문자열로 변환
+SELECT TO_CHAR(10000000, '999,999,999') -- 9자리까지 숫자를 표기하고 3자리마다 쉼표 표시
+	 , TO_CHAR(1000000, '099,999,999') -- 9자리까지 숫자를 표기하고 3자리마다 쉼표 표시, 0을 붙여서 표기
+	FROM DUAL;
+
+-- 날짜를 문자열로 변환
+SELECT TO_CHAR(SYSDATE, 'YYYY/MM/DD HH24:MI:SS')
+	 , TO_CHAR(SYSDATE, 'YYYY/MM/DD DAY')
+	 , TO_CHAR(SYSDATE, '"오늘은 "YYYY"년 " MM"월 " DD"일입니다."')
+	 , TO_CHAR(SYSDATE, 'DY"요일입니다."')
+	FROM DUAL;
+
+SELECT TO_DATE('2024/05/24 15:18:00', 'YYYY/MM/DD HH24:MI:SS')
+	FROM DUAL;
+
+-- 교수의 부임일을 다음 형식으로 표현하세요
+-- 'OOO 교수의 부임일은 YYYY년 MM월 DD일입니다.'
+
+
+-- 교수중에 3월에 부임한 교수의 명단을 검색하세요
+
+
+
