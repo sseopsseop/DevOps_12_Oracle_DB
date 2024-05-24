@@ -357,3 +357,33 @@ SELECT ENO
 	
 -- 사원의 사원번호, 사원이름, 업무, 급여, 인상급여 조회
 -- 업무가 개발이면 50%인상, 업무가 경영이면 30%인상, 지원이면 20%인상, 그 외 업무면 10%이상 된 인상급여 조회
+SELECT ENO
+     , ENAME
+ 	 , JOB
+ 	 , SAL
+ 	 , CASE JOB
+	 	 WHEN '개발'
+	 	 THEN SAL * 1.5
+	 	 WHEN '경영'
+	 	 THEN SAL * 1.3
+	 	 WHEN '지원'
+	 	 THEN SAL * 1.2
+	   ELSE SAL * 1.1
+	   END AS CHANGED_SAL
+FROM EMP;
+
+
+SELECT ENO
+     , ENAME
+ 	 , JOB
+ 	 , SAL
+ 	 , CASE 
+	 	 WHEN JOB = '개발'
+	 	 THEN SAL * 1.5
+	 	 WHEN JOB = '경영'
+	 	 THEN SAL * 1.3
+	 	 WHEN JOB = '지원'
+	 	 THEN SAL * 1.2
+	   ELSE SAL * 1.1
+	   END AS CHANGED_SAL
+FROM EMP;
