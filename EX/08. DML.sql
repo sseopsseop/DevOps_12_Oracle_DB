@@ -1,0 +1,75 @@
+-- 1. DML(DATA MANIPULATION LANGUAGE): 데이터 조작 언어
+-- 데이터를 저장, 수정, 삭제하는 언어로 INSERT INTO, UPDATE SET, DELETE FROM이 존재한다.
+-- DML은 트랜잭션을 완료하기 위해서 항상 COMMIT이나 ROLLBACK을 동반한다.
+-- 1-1. INSERT INTO: 테이블에 데이터를 저장하는 명령어
+-- 일부 컬럼에 대한 데이터를 저장
+INSERT INTO EMP(ENO, ENAME, JOB, HDATE) VALUES ('9997', '장길산', '설계', SYSDATE);
+COMMIT;
+
+SELECT *
+	FROM EMP;
+	
+INSERT INTO EMP(ENO, ENAME, JOB, HDATE) VALUES ('9996', '임꺽정', '개발', SYSDATE);
+COMMIT;
+INSERT INTO EMP(ENO, ENAME, JOB, HDATE) VALUES ('9995', '홍길동', '회계', SYSDATE);
+INSERT INTO EMP(ENO, ENAME, JOB, HDATE) VALUES ('9994', '조병조', '지원', SYSDATE);
+INSERT INTO EMP(ENO, ENAME, JOB, HDATE) VALUES ('9993', '정도전', '경영', SYSDATE);
+-- COMMIT이 발생한 작업에 대해서는 ROLLBACK으로 취소할 수 없다.
+ROLLBACK;
+
+-- INSERT INTO 시  지정한 컬럼의 개수와 컬럼의 타입에 맞는 데이터를 입력해야 한다.
+INSERT INTO EMP(ENO, ENAME, JOB, HDATE) VALUES ('9993', '정도전', '경영');
+INSERT INTO EMP(SAL) VALUES ('ㅁㅁㅁㅁㅁㅁ');
+-- VARCHAR타입의 숫자 값이 NUMBER 타입으로 형변환이 일어나면서 저장된다.
+INSERT INTO EMP(SAL) VALUES ('12838');
+
+-- 모든 컬럼에 데이터를 저장할 때는 컬럼지정을 생략해도 된다.
+INSERT INTO EMP(ENO, ENAME, JOB, MGR, HDATE, SAL, COMM, DNO)
+	VALUES('9996', '임꺽정', '회계', '0001', SYSDATE, 4000, 300, '10');
+
+INSERT INTO EMP VALUES('9995', '조병조', '경영', '0201', SYSDATE, 3700, 280, '20');
+
+COMMIT;
+
+-- 다량의 데이터를 SELECT 구문을 이용해서 저장
+CREATE TABLE EMP_DNO30(
+	ENO VARCHAR2(4),
+	ENAME VARCHAR2(20),
+	JOB VARCHAR2(10),
+	MRG VARCHAR2(4),
+	HDATE DATE,
+	SAL NUMBER(5, 0),
+	COMM NUMBER(5, 0),
+	DNO VARCHAR2(2)
+);
+
+-- DNO이 30인 사원 목록을 EMP 테이블에서 조회해서 EMP_DNO30에 저장
+INSERT INTO EMP_DNO30 
+SELECT *
+	FROM EMP
+	WHERE DNO = '30';
+COMMIT;
+
+SELECT *
+	FROM EMP_DNO30;
+
+-- SELECT 구문을 이용해서 다량의 데이터를 저장하는 데 특정 컬럼의 데이터만 저장
+-- DNO이 10인 사원의 사원번호, 사원이름만 EMP 테이블에서 조회해서 EMP_DNO30 테이블에 저장
+INSERT INTO EMP_DNO30(ENO, ENAME)
+SELECT ENO
+	 , ENAME
+	FROM EMP
+	WHERE DNO = '10';
+COMMIT;
+
+INSERT INTO EMP_DNO30(ENO, ENAME)
+SELECT DNO
+	 , DNAME
+	FROM DEPT
+	WHERE LOC = '서울';
+COMMIT;
+
+
+
+
+
