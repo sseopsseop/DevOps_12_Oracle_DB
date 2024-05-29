@@ -1,0 +1,88 @@
+--1) 4.5 환산 평점이 가장 높은 3인의 학생을 검색하세요.
+SELECT ROWNUM
+	 , A.SNO
+	 , A.SNAME
+	 , A.CONVERT_AVR
+	FROM (
+		SELECT ST.SNO
+	 		 , ST.SNAME
+	 		 , (ST.AVR * 1.125) AS CONVERT_AVR
+	 		FROM STUDENT ST
+	 		ORDER BY AVR DESC, ST.SNO
+	) A
+	WHERE ROWNUM <= 3;
+
+--2) 기말고사 과목별 평균이 높은 3과목을 검색하세요.
+SELECT ROWNUM
+	 , A.CNO
+	 , A.CNAME
+	 , A.AVG_RES
+	 FROM (
+	 	SELECT C.CNO
+	 		 , C.CNAME
+	 		 , AVG(SC.RESULT) AS AVG_RES
+	 		FROM COURSE C
+	 		JOIN SCORE SC
+	 		  ON SC.CNO = C.CNO
+	 		GROUP BY C.CNO, C.CNAME
+	 		ORDER BY AVG_RES DESC
+	 ) A
+	 WHERE ROWNUM <= 3
+
+--3) 학과별, 학년별, 기말고사 평균이 순위 3까지를 검색하세요.(학과, 학년, 평균점수 검색)
+SELECT ROWNUM
+	 , A.MAJOR
+	 , A.SYEAR
+	 , A.AVG_RES
+	FROM (
+		SELECT ST.MAJOR
+			 , ST.SYEAR
+			 , AVG(SC.RESULT) AS AVG_RES
+			FROM STUDENT ST
+			JOIN SCORE SC
+			  ON SC.SNO = ST.SNO
+			GROUP BY ST.MAJOR, ST.SYEAR
+			ORDER BY AVG_RES DESC
+	) A
+	WHERE ROWNUM <= 3
+
+--4) 기말고사 성적이 높은 과목을 담당하는 교수 3인을 검색하세요.(교수이름, 과목명, 평균점수 검색)
+SELECT ROWNUM
+	 , A.PNAME
+	 , A.CNAME
+	 , A.AVG_RES
+	FROM (
+		SELECT P.PNAME
+			 , C.CNAME
+			 , AVG(SC.RESULT) AS AVG_RES
+			FROM PROFESSOR p 
+			JOIN COURSE C
+			  ON P.PNO = C.PNO
+			JOIN SCORE SC
+			  ON C.CNO = SC.CNO
+			GROUP BY P.PNAME, C.CNAME
+			ORDER BY AVG_RES DESC
+	) A
+	WHERE ROWNUM <= 3
+
+--5) 교수별로 현재 수강중인 학생의 수를 검색하세요.
+SELECT B.PNO
+	 , B.PNAME
+	 , B.COUNT_STUDENT
+	FROM (
+		SELECT P.PNO
+			 , P.PNAME
+			 , A.COUNT_STUDENT
+			FROM PROFESSOR P
+			JOIN COURSE C
+			  ON C.PNO = P.PNO
+			JOIN (
+				SELECT SC.CNO
+					 , COUNT(*) AS COUNT_STUDENT
+					FROM SCORE SC
+					GROUP BY SC.CNO
+			)A
+			  ON A.CNO = C.CNO
+			
+	) B;
+
